@@ -1,4 +1,4 @@
-import React, {useState, useRef} from 'react'
+import React, {useState, useRef, useEffect} from 'react'
 import { Button, Navbar, Container, Nav, Table, Form, Alert} from 'react-bootstrap'
 import { useAuth } from "../Context/AuthContext"
 import { useHistory } from "react-router-dom"
@@ -8,14 +8,41 @@ function Dashboard() {
     const [error, setError] = useState("")
     const [message, setMessage] = useState("")
     const [loading, setLoading] = useState(false)
+    const [userUrls, setUserUrls] = useState([])
     const urlRef = useRef();
     const urlIDRef = useRef();
-    // const [userUrls, setUserUrls] = useState([])
     const { currentUser, logout } = useAuth()
     const history = useHistory()
+
+    useEffect(() => {
+        async function getUserData() {
+            await db.collection('urlShortner').doc('userUrls').collection("users").where("id", "==", currentUser.uid).get()
+                .then(async (querySnapshot) => {
+                    if (!querySnapshot.empty) {
+                        let urls = []
+                        querySnapshot.forEach((snapshot) => {
+                            urls = snapshot.data()?.urls
+                        })
+                        urls.forEach((url) => {
+                            db.collection('urlShortner').doc('userUrls').collection("urls").where("id", "==", url).get()
+                                .then(querySnapshot => {
+                                    querySnapshot.forEach((snapshot) => {
+                                        setUserUrls(oldArray => {
+                                            let arr = oldArray.filter((arr) => arr.id !== snapshot.data().id)
+                                            return [...arr,snapshot.data()]
+                                        });
+                                    })
+
+                                })
+                        })
+                    }
+                })
+        }
+        getUserData()
+    }, [message, error, currentUser.uid]);
+
     let handleLogout = async () => {
         setError('')
-
         try {
             await logout()
             history.push('/login')
@@ -33,12 +60,10 @@ function Dashboard() {
             .then(async (querySnapshot) => {
                 if (querySnapshot.empty) {
                     let users = await db.collection('urlShortner').doc('userUrls').collection("users").get()
-                    console.log(users)
                     let userExists = false
                     let id = v4()
                     users.forEach(async (user) => {
                         if (user.id === currentUser.uid) {
-                            
                             userExists = true
                             let urlsArray = user.data().urls
                             await user.ref.update({
@@ -49,15 +74,17 @@ function Dashboard() {
                     })
                     if (!userExists) {
                         db.collection('urlShortner').doc('userUrls').collection("users").doc(currentUser.uid).set({
-                            urls: [id]
+                            urls: [id],
+                            id: currentUser.uid
                         })
                     }
                     db.collection('urlShortner').doc('userUrls').collection("urls").doc(id).set({
                         count: 1,
                         shortUrl: urlIDRef.current.value,
-                        url: urlRef.current.value
+                        url: urlRef.current.value,
+                        id: id
                     })
-                    setMessage(`Short URL Created Successfully. You can visit it at localhost/3000/${urlIDRef.current.value}`)
+                    setMessage(`Short URL Created Successfully. You can visit it at ${window.location.origin}/${urlIDRef.current.value}`)
                 } else {
                     setError('Short URL already exists, please create another one')
                 }
@@ -89,7 +116,7 @@ function Dashboard() {
                     <Form.Group id="shortUrl" className="mt-2">
                         <Form.Control type="text" ref={urlIDRef} required placeholder="Enter Short URL (Example: protfolio)" />
                     </Form.Group>
-                    <Button className="w-100 mt-2" type="submit">Shorten URL</Button>
+                    <Button disbaled={loading} className="w-100 mt-2" type="submit">Shorten URL</Button>
                 </Form>
                 
             </div>
@@ -97,19 +124,22 @@ function Dashboard() {
                 <Table striped bordered hover>
                     <thead>
                         <tr>
-                        <th>#</th>
                         <th>URL</th>
                         <th>Short URL</th>
                         <th>Count</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                        <td>1</td>
-                        <td><a href="http://www.google.com">Google </a></td>
-                        <td><a href="http://www.google.com">Google </a></td>
-                        <td>1</td>
-                        </tr>
+                        {
+                            userUrls.map(userUrl => {
+                                return (<tr key={userUrls.id}>
+                                <td><a href={userUrl.url}>{userUrl.url} </a></td>
+                                <td><a href={userUrl.shortUrl}>{userUrl.shortUrl} </a></td>
+                                <td>{userUrl.count}</td>
+                                </tr>)
+                            })
+                        }
+                        
                     </tbody>
                 </Table>
             </div>
