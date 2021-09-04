@@ -6,6 +6,7 @@ import Dashboard from "./Dashboard";
 import Login from "./Login";
 import PrivateRoute from "./PrivateRoute";
 import UpdateProfile from "./UpdateProfile";
+import GoLink from "./GoLink";
 
 function App() {
     
@@ -18,6 +19,7 @@ function App() {
           <Route path="/signup" component={Signup} />
           <Route path="/login" component={Login} />
           <Route path="/forgot-password" component={ForgotPassword} />
+          <Route exact path="/:shortUrl" component={GoLink} />
         </Switch>
       </AuthProvider>
     </Router>

@@ -6,7 +6,7 @@ import { useHistory } from "react-router-dom"
 function Dashboard() {
     const [error, setError] = useState("")
     const urlRef = useRef();
-
+    const urlIDRef = useRef();
     // const [userUrls, setUserUrls] = useState([])
     const { currentUser, logout } = useAuth()
     const history = useHistory()
@@ -35,9 +35,14 @@ function Dashboard() {
             </Navbar>
             <h1 className="d-flex align-items-center justify-content-center">Create Short URL</h1>
             <div className="m-4">
-                <Form className="w-100 d-flex p-4">
-                    <Form.Control type="url" ref={urlRef} required />
-                    <Button className="w-10" type="submit">Shorten URL</Button>
+                <Form className="w-100 p-4">
+                    <Form.Group id="url" className="mt-2">
+                        <Form.Control type="url" ref={urlRef} required placeholder="Enter Full URL (Example: https://www.calledRahul.com)"/>
+                    </Form.Group>
+                    <Form.Group id="shortUrl" className="mt-2">
+                        <Form.Control type="text" ref={urlIDRef} placeholder="Enter Short URL (Example: protfolio)" />
+                    </Form.Group>
+                    <Button className="w-100 mt-2" type="submit">Shorten URL</Button>
                 </Form>
                 
             </div>
