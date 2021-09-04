@@ -2,12 +2,13 @@ import React, {useRef, useState} from 'react'
 import { Card, Button, Form, Alert } from 'react-bootstrap'
 import { useAuth } from '../Context/AuthContext'
 import {Link, useHistory} from 'react-router-dom'
+import GoogleImage from "../Images/google.png"
 
 function Signup() {
     const emailRef = useRef();
     const passwordRef = useRef();
     const passwordConfirmRef = useRef();
-    const { signup } = useAuth()
+    const { signup, SignInWithGoogle } = useAuth()
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false)
     const history = useHistory()
@@ -29,6 +30,19 @@ function Signup() {
         }
         setLoading(false)
     }
+
+    async function handleSignInWithGoogle() {
+        try {
+            setError('');
+            setLoading(true);
+            await SignInWithGoogle()
+            history.push("/")
+        } catch (e) {
+            setError(`Failed to sign in: ${e}`)
+        }
+        setLoading(false)
+    }
+
     return (
         <>
             <Card>
@@ -50,6 +64,8 @@ function Signup() {
                         </Form.Group>
                         <Button disbaled={loading} className="w-100 mt-4" type="submit">Sign Up</Button>
                     </Form>
+                    <img src={ GoogleImage} alt="Google Sign In" style={{height:"4.5rem", width:"100%", marginTop: "4px", cursor:"pointer"}} onClick={handleSignInWithGoogle}/>
+
                 </Card.Body>
             </Card>
             <div className="w-100 text-center mt-2">
