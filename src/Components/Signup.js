@@ -3,10 +3,12 @@ import { Card, Button, Form, Alert } from 'react-bootstrap'
 import { useAuth } from '../Context/AuthContext'
 import {Link, useHistory} from 'react-router-dom'
 import GoogleImage from "../Images/google.png"
+import { Container } from "react-bootstrap";
 
 function Signup() {
     const emailRef = useRef();
     const passwordRef = useRef();
+    const nameRef = useRef();
     const passwordConfirmRef = useRef();
     const { signup, SignInWithGoogle } = useAuth()
     const [error, setError] = useState('');
@@ -22,7 +24,7 @@ function Signup() {
         try {
             setError('');
             setLoading(true);
-            await signup(emailRef.current.value, passwordRef.current.value)
+            await signup(emailRef.current.value, passwordRef.current.value, nameRef.current.value)
             history.push("/")
 
         } catch (e) {
@@ -45,11 +47,19 @@ function Signup() {
 
     return (
         <>
+            <Container className="d-flex align-items-center justify-content-center"
+                    style={{minHeight: "100vh"}}
+            >
+            <div className="w-100" style={{ maxWidth: '400px' }}>
             <Card>
                 <Card.Body>
                     <h2 className="text-center mb-4">Sign Up</h2>
                     {error && <Alert variant="danger">{error} </ Alert>}
                     <Form onSubmit={handleSubmit}>
+                        <Form.Group id="name">
+                            <Form.Label>Name</Form.Label>
+                            <Form.Control type="name" ref={nameRef} required />
+                        </Form.Group>
                         <Form.Group id="email">
                             <Form.Label>Email</Form.Label>
                             <Form.Control type="email" ref={emailRef} required />
@@ -66,11 +76,14 @@ function Signup() {
                     </Form>
                     <img src={ GoogleImage} alt="Google Sign In" style={{height:"4.5rem", width:"100%", marginTop: "4px", cursor:"pointer"}} onClick={handleSignInWithGoogle}/>
 
-                </Card.Body>
-            </Card>
-            <div className="w-100 text-center mt-2">
-                Already have an account? <Link to="/login">Log In</Link>
-            </div>
+                    </Card.Body>
+                </Card>
+                <div className="w-100 text-center mt-2">
+                    Already have an account? <Link to="/login">Log In</Link>
+                </div>
+                </div>
+            </Container>
+            
         </>
     )
 }
