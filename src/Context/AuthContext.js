@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect } from 'react'
-import { auth } from '../firebase'
+import { auth, signInProvider } from '../firebase'
 
 const AuthContext = React.createContext()
 
@@ -35,8 +35,12 @@ export function AuthProvider({children}) {
         currentUser.updatePassword(password)
     }
 
+    function SignInWithGoogle() {
+        return auth.signInWithPopup(signInProvider)
+    }
+
     useEffect(() => {
-        const unsubscribe = auth.onAuthStateChanged(user => {
+        auth.onAuthStateChanged(user => {
             setCurrentUser(user)
             setLoading(false);
         })
@@ -50,7 +54,8 @@ export function AuthProvider({children}) {
         logout,
         resetPassword,
         updateEmail,
-        updatePassword
+        updatePassword,
+        SignInWithGoogle
     }
     return (
         <AuthContext.Provider value={value}>
