@@ -24,7 +24,7 @@ function GoLink() {
                 }
                 )                
         })
-    }, [])
+    }, [history, shortUrl])
 
 
     return (

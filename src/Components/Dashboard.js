@@ -140,7 +140,7 @@ function Dashboard() {
                     <Form.Group id="shortUrl" className="mt-2">
                         <Form.Control type="text" ref={urlIDRef} required placeholder="Enter Short URL (Example: protfolio)" />
                     </Form.Group>
-                    <Button disbaled={loading} className="w-100 mt-2" type="submit">Shorten URL</Button>
+                    <Button disbaled={loading.toString()} className="w-100 mt-2" type="submit">Shorten URL</Button>
                 </Form>
                 
             </div>
@@ -157,11 +157,11 @@ function Dashboard() {
                     <tbody>
                         {
                             userUrls.map(userUrl => {
-                                return (<tr key={userUrls.id}>
-                                <td><a href={userUrl.url}>{userUrl.url} </a></td>
-                                <td><a href={userUrl.shortUrl}>{userUrl.shortUrl} </a></td>
-                                <td align-items-center justify-content-center>{userUrl.count}</td>
-                                    <td className="d-flex align-items-center justify-content-center"><Button  variant="danger" onClick={() => handleDelete(userUrl.id)} >X</Button></td>
+                                return (<tr key={userUrls.id+"tr"}>
+                                <td key={userUrls.id+"url"}><a href={userUrl.url}>{userUrl.url} </a></td>
+                                <td key={userUrls.id+"shortUrl"}><a href={userUrl.shortUrl}>{userUrl.shortUrl} </a></td>
+                                <td key={userUrls.id+"count"}>{userUrl.count}</td>
+                                <td key={userUrls.id+"delete"}className="d-flex align-items-center justify-content-center"><Button  variant="danger" onClick={() => handleDelete(userUrl.id)} >X</Button></td>
                                 </tr>)
                             })
                         }
