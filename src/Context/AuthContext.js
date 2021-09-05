@@ -47,7 +47,6 @@ export function AuthProvider({children}) {
         auth.onAuthStateChanged(user => {
             setCurrentUser(user)
             setLoading(false);
-            console.log(user)
         })
     }, [])
 

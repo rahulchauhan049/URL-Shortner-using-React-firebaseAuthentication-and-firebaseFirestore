@@ -92,6 +92,30 @@ function Dashboard() {
             })
         setLoading(false)
     }
+
+    let handleDelete = async (id) => {
+        await db.collection('urlShortner').doc('userUrls').collection("users").where("id", "==", currentUser.uid).get()
+            .then(async (querySnapshot) => {
+                    if (!querySnapshot.empty) {
+                        querySnapshot.forEach(async (user) => {
+                            if (user.id === currentUser.uid) {
+                                await user.ref.update({
+                                    urls: user.data().urls.filter(url => url !== id)
+                                })
+                            }
+                        })
+                    }
+                })
+        await db.collection('urlShortner').doc('userUrls').collection("urls").where("id", "==", id).get()
+            .then(async (querySnapshot) => {
+                if (!querySnapshot.empty) {
+                    querySnapshot.forEach(async (url) => {
+                        url.ref.delete();
+                    })
+                }
+            })
+        setUserUrls(oldArray => oldArray.filter(url => url.id !== id))
+    }
     
     return (
         <>
@@ -127,6 +151,7 @@ function Dashboard() {
                         <th>URL</th>
                         <th>Short URL</th>
                         <th>Count</th>
+                        <th className="d-flex align-items-center justify-content-center">Delete</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -135,7 +160,8 @@ function Dashboard() {
                                 return (<tr key={userUrls.id}>
                                 <td><a href={userUrl.url}>{userUrl.url} </a></td>
                                 <td><a href={userUrl.shortUrl}>{userUrl.shortUrl} </a></td>
-                                <td>{userUrl.count}</td>
+                                <td align-items-center justify-content-center>{userUrl.count}</td>
+                                    <td className="d-flex align-items-center justify-content-center"><Button  variant="danger" onClick={() => handleDelete(userUrl.id)} >X</Button></td>
                                 </tr>)
                             })
                         }
