@@ -51,13 +51,13 @@ function UpdateProfile() {
                         </Form.Group>
                         <Form.Group id="password">
                             <Form.Label>Password</Form.Label>
-                            <Form.Control type="password" ref={passwordRef} placeholder="Leave Blank to keep the same password"/>
+                            <Form.Control type="password" autoComplete="on" ref={passwordRef} placeholder="Leave Blank to keep the same password"/>
                         </Form.Group>
                         <Form.Group id="pass-confirm">
                             <Form.Label>Password Confirmation</Form.Label>
-                            <Form.Control type="password" ref={passwordConfirmRef} placeholder="Leave Blank to keep the same password"/>
+                            <Form.Control type="password" autoComplete="on" ref={passwordConfirmRef} placeholder="Leave Blank to keep the same password"/>
                         </Form.Group>
-                        <Button disbaled={loading} className="w-100" type="submit">Update</Button>
+                        <Button disbaled={loading.toString()} className="w-100" type="submit">Update</Button>
                     </Form>
                 </Card.Body>
             </Card>

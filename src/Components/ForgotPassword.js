@@ -42,7 +42,7 @@ function ForgotPassword() {
                                 <Form.Control type="email" ref={emailRef} required />
                             </Form.Group>
 
-                            <Button disbaled={loading} className="w-100" type="submit">Reset Password</Button>
+                            <Button disbaled={loading.toString()} className="w-100" type="submit">Reset Password</Button>
                         </Form>
                         <div className="w-100 text-center mt-3">
                             <Link to="/login">Login</Link>

@@ -55,10 +55,10 @@ function Login() {
                             </Form.Group>
                             <Form.Group id="password">
                                 <Form.Label>Password</Form.Label>
-                                <Form.Control type="password" ref={passwordRef} required />
+                                <Form.Control type="password" autoComplete="on" ref={passwordRef} required />
                             </Form.Group>
 
-                            <Button disbaled={loading} className="w-100 mt-4" type="submit">Log In</Button>
+                            <Button disbaled={loading.toString()} className="w-100 mt-4" type="submit">Log In</Button>
                         </Form>
                         <img src={ GoogleImage} alt="Google Sign In" style={{height:"4.5rem", width:"100%", marginTop: "4px", cursor:"pointer"}} onClick={handleSignInWithGoogle}/>
 
